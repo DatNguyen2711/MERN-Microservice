@@ -1,29 +1,26 @@
 version: "3.8"
+
 services:
   client:
+    image: client:dev_v1
     build:
       context: ./front-end
       dockerfile: Dockerfile
     ports:
       - "8900:80"
     restart: always
-    # env_file:
-    #   - ./.env
-    # environment:
-    #   - API_URL_USER=${API_URL_USER}
-    #   - API_URL_PRODUCT=${API_URL_PRODUCT}
-    #   - API_URL_CART=${API_URL_CART}
     depends_on:
       - product-service
       - user-service
       - cart-service
+    networks:
+      - app-network
 
   user-service:
+    image: user-service:dev_v1
     build:
       context: ./User
       dockerfile: Dockerfile
-      args:
-        - TAG=v1
     container_name: user-service
     environment:
       - PORT_USER_SERVICE=${PORT_USER_SERVICE}
@@ -39,13 +36,17 @@ services:
       - "${PORT_USER_SERVICE}:${PORT_USER_SERVICE}"
     depends_on:
       - db
-    # networks:
-    #   - db-network
+    networks:
+      - db-network
+      - app-network
 
   cart-service:
+    image: cart-service:dev_v1
     build:
       context: ./Cart
       dockerfile: Dockerfile
+      args:
+        - TAG=dev_v1
     restart: always
     container_name: cart-service
     environment:
@@ -61,10 +62,12 @@ services:
       - "${PORT_CART_SERVICE}:${PORT_CART_SERVICE}"
     depends_on:
       - db
-    # networks:
-    #   - db-network
+    networks:
+      - db-network
+      - app-network
 
   product-service:
+    image: product-service:dev_v1
     build:
       context: ./Product
       dockerfile: Dockerfile
@@ -82,19 +85,20 @@ services:
       - "${PORT_PRODUCT_SERVICE}:${PORT_PRODUCT_SERVICE}"
     depends_on:
       - db
-    # networks:
-    #   - db-network
+    networks:
+      - db-network
+      - app-network
 
   db:
     image: mongo:4.4
     volumes:
-      - ./User/.docker/data/db:/data/db
-      - ./Cart/.docker/data/db:/data/db
-      - ./Product/.docker/data/db:/data/db
+      - ./.docker/data/db:/data/db
     restart: unless-stopped
-    # networks:
-    #   - db-network
+    networks:
+      - db-network
 
 networks:
   db-network:
+    driver: bridge
+  app-network:
     driver: bridge
