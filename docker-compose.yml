@@ -45,8 +45,6 @@ services:
     build:
       context: ./Cart
       dockerfile: Dockerfile
-      args:
-        - TAG=dev_v1
     restart: always
     container_name: cart-service
     environment:
@@ -100,5 +98,7 @@ services:
 networks:
   db-network:
     driver: bridge
+    name: db-network
   app-network:
     driver: bridge
+    name: app-network
