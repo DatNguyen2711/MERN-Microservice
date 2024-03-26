@@ -1,20 +1,100 @@
-version: '3'
+version: "3.8"
 services:
-  user:
-    image: user
+  client:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
     ports:
-      - "3001:3001"
-    command: node server.js
+      - "8900:80"
+    restart: always
+    # env_file:
+    #   - ./.env
+    # environment:
+    #   - API_URL_USER=${API_URL_USER}
+    #   - API_URL_PRODUCT=${API_URL_PRODUCT}
+    #   - API_URL_CART=${API_URL_CART}
+    depends_on:
+      - product-service
+      - user-service
+      - cart-service
 
-  cart:
-    image: cart
+  user-service:
+    build:
+      context: ./User
+      dockerfile: Dockerfile
+      args:
+        - TAG=v1
+    container_name: user-service
+    environment:
+      - PORT_USER_SERVICE=${PORT_USER_SERVICE}
+      - ACCESS_TOKEN=${ACCESS_TOKEN}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      # - MONGO_USERNAME=${MONGO_USERNAME}
+      # - MONGO_PASSWORD=${MONGO_PASSWORD}
+      # - MONGO_CLUSTER=${MONGO_CLUSTER}
+    restart: always
     ports:
-      - "3003:3003"
-    command: node server.js  
+      - "${PORT_USER_SERVICE}:${PORT_USER_SERVICE}"
+    depends_on:
+      - db
+    # networks:
+    #   - db-network
 
-  product:
-    image: product
+  cart-service:
+    build:
+      context: ./Cart
+      dockerfile: Dockerfile
+    restart: always
+    container_name: cart-service
+    environment:
+      - PORT_CART_SERVICE=${PORT_CART_SERVICE}
+      - ACCESS_TOKEN=${ACCESS_TOKEN}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      # - MONGO_USERNAME=${MONGO_USERNAME}
+      # - MONGO_PASSWORD=${MONGO_PASSWORD}
+      # - MONGO_CLUSTER=${MONGO_CLUSTER}
     ports:
-      - "3002:3002"
-    command: node server.js
-    
+      - "${PORT_CART_SERVICE}:${PORT_CART_SERVICE}"
+    depends_on:
+      - db
+    # networks:
+    #   - db-network
+
+  product-service:
+    build:
+      context: ./Product
+      dockerfile: Dockerfile
+    restart: always
+    container_name: product-service
+    environment:
+      - PORT_PRODUCT_SERVICE=${PORT_PRODUCT_SERVICE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      # - MONGO_USERNAME=${MONGO_USERNAME}
+      # - MONGO_PASSWORD=${MONGO_PASSWORD}
+      # - MONGO_CLUSTER=${MONGO_CLUSTER}
+    ports:
+      - "${PORT_PRODUCT_SERVICE}:${PORT_PRODUCT_SERVICE}"
+    depends_on:
+      - db
+    # networks:
+    #   - db-network
+
+  db:
+    image: mongo:4.4
+    volumes:
+      - ./User/.docker/data/db:/data/db
+      - ./Cart/.docker/data/db:/data/db
+      - ./Product/.docker/data/db:/data/db
+    restart: unless-stopped
+    # networks:
+    #   - db-network
+
+networks:
+  db-network:
+    driver: bridge

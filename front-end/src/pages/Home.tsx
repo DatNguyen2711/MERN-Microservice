@@ -8,6 +8,7 @@ function Home() {
   const [selectedOption, setSelectedOption] = useState("idle");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const apiUrl = process.env.API_URL_PRODUCT;
 
   useEffect(() => {
     fetchData();
@@ -15,7 +16,7 @@ function Home() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3002/products", {
+      const response = await fetch(`${apiUrl}/products`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -43,7 +44,7 @@ function Home() {
     if (selectedCategory === "idle") {
       fetchData();
     } else {
-      fetch(`http://localhost:3002/filter/category/${selectedCategory}`, {
+      fetch(`${apiUrl}/filter/category/${selectedCategory}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -101,8 +102,10 @@ function Home() {
                             <option value="Simulation">Simulation</option>
                             <option value="Shooter">Shooter</option>
                           </select>
-                          <span className="margleft"><i className="fa fa-search"></i></span>
-                          
+                          <span className="margleft">
+                            <i className="fa fa-search"></i>
+                          </span>
+
                           <input
                             className="newSearch"
                             type="text"
@@ -112,8 +115,12 @@ function Home() {
                             value={searchKeyword}
                             onChange={(e) => setSearchKeyword(e.target.value)}
                           />
-                          <button className="searchButton" onClick={handleSearch}>Search</button>
-
+                          <button
+                            className="searchButton"
+                            onClick={handleSearch}
+                          >
+                            Search
+                          </button>
                         </div>
                       </div>
                       <div className="row">

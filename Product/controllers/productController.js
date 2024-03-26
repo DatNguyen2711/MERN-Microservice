@@ -10,6 +10,7 @@ const getProducts = async (req, res) => {
         const products = await productModel.find();
         res.status(200).json(products);
     } catch (error) {
+        console.log("error "+error.message);
         res.status(400).json(error);
     }
 };

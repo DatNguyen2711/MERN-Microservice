@@ -6,11 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:production": "env-cmd -f .env npm run build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
     "bootstrap": "^5.2.3",
+    "env-cmd": "^10.1.0",
     "fs": "^0.0.1-security",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

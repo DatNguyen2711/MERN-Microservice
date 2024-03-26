@@ -1,11 +1,20 @@
-FROM node
+# Giai đoạn 1: Xây dựng ứng dụng
+FROM node:20-alpine as builder
 
 WORKDIR /app
 
-COPY . /app
+COPY ["package.json", "package-lock.json*", "./"]
+RUN npm install --production --silent
 
-EXPOSE 3002:3002
+COPY . .
 
-RUN npm install
+# Giai đoạn 2: Tạo ảnh nhỏ hơn cho sản xuất
+FROM node:20-alpine
+WORKDIR /app
 
-CMD npm run dev
+COPY --from=builder /app .
+
+RUN chown -R node:node /app
+
+USER node
+CMD ["node", "server.js"]

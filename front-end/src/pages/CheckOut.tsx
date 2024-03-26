@@ -1,21 +1,20 @@
 import { Fragment } from "react";
 import "../Style/CheckOut.css";
 function CheckOut() {
+  function submitHandler() {
+    alert("Your order has been placed!");
+  }
 
-  
-function submitHandler(){
-  alert("Your order has been placed!");
-}
-
+  const apiUrl = process.env.API_URL_CART;
 
   const token = localStorage.getItem("token");
 
-  if (token) { 
-    fetch("http://localhost:3003/cart/checkout", {
+  if (token) {
+    fetch(`${apiUrl}/cart/checkout`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
+        Authorization: "Bearer " + token,
       },
     }).then((response) => {
       if (response.ok) {
@@ -29,9 +28,6 @@ function submitHandler(){
   } else {
     window.location.href = "/login";
   }
-  
-  
-
 
   return (
     <Fragment>
@@ -93,7 +89,9 @@ function submitHandler(){
               </div>
             </div>
 
-            <div className="bat"  onClick={submitHandler} >proceed</div>
+            <div className="bat" onClick={submitHandler}>
+              proceed
+            </div>
           </div>
         </div>
       </div>

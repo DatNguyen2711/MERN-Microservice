@@ -1,8 +1,8 @@
 import { Fragment, useState } from "react";
 import "../Style/Login.css";
-import Alert from "../component/Alert";
 function Login() {
 
+const apiUrl = process.env.API_URL_USER;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -10,17 +10,16 @@ function Login() {
     event.preventDefault();
     
     try {
-      const response = await fetch("http://localhost:3001/users/login", {
+      const response = await fetch(`${apiUrl}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
   
       if (response.ok) {
         console.log("Login successful");
-        // window.location.href = "/";
         response.json().then((data) => {
           window.location.href = "/";
           console.log(data);

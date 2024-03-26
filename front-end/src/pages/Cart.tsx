@@ -3,8 +3,8 @@ import { Fragment, useEffect, useState } from "react";
 import "../Style/Cart.css";
 import NavBar from "../component/NavBar";
 function Cart() {
-
   const [cartData, setCartData] = useState({ total: 0, Products: [] });
+  const apiUrl = process.env.API_URL_CART;
 
   useEffect(() => {
     const fetchCartData = async () => {
@@ -18,10 +18,10 @@ function Cart() {
           return;
         }
 
-        const response = await fetch("http://localhost:3003/cart", {
+        const response = await fetch(`${apiUrl}/cart`, {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + token,
+            Authorization: "Bearer " + token,
           },
         });
 
@@ -57,8 +57,6 @@ function Cart() {
     }
   }, [cartData]);
 
-
-
   return (
     <Fragment>
       <div className="backgrounds">
@@ -85,18 +83,16 @@ function Cart() {
                     </tr>
                   </thead>
                   <tbody>
-                    
-                  {cartData.Products.map((product: any) => (
-                    <tr className="cart-table-content" key={product._id}>
-                      <td className="cart-table-image-info">
-                        <img src={product.image} alt="Product Image"/>
-                      </td>
-                      <td className="bold-text">{product.name}</td>
-                      <td>{product.category}</td>
-                      <td>${product.price}</td>
-                    </tr>
-                  ))}
-
+                    {cartData.Products.map((product: any) => (
+                      <tr className="cart-table-content" key={product._id}>
+                        <td className="cart-table-image-info">
+                          <img src={product.image} alt="Product Image" />
+                        </td>
+                        <td className="bold-text">{product.name}</td>
+                        <td>{product.category}</td>
+                        <td>${product.price}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>

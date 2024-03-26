@@ -1,11 +1,20 @@
-FROM node:latest
+FROM node:20-alpine as build-stage
+ARG BUILD_ENV=production
 
 WORKDIR /app
+COPY ["package.json", "package-lock.json*", "./"]
 
-COPY . app/
+RUN npm install --production --silent
+RUN npm install typescript --save-dev
+COPY . .
+RUN npm run build:${BUILD_ENV}
 
-RUN npm install
 
-EXPOSE 3000
+# production stage
+FROM nginx:1.25-alpine as production-stage
+RUN mkdir /app
 
-CMD npm run dev
+COPY --from=build-stage /app/dist /app
+COPY nginx.conf /etc/nginx/nginx.conf
+
+CMD ["nginx", "-g", "daemon off;"]

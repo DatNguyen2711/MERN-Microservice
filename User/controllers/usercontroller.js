@@ -17,7 +17,6 @@ const getUser = async (req, res) => {
 }
 
 const userRegister = async (req, res) => {
-
     const { email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const foundUser = await userModel.findOne({ email: email });
@@ -33,11 +32,7 @@ const userRegister = async (req, res) => {
             phone: req.body.phone,
             gender: req.body.gender
         }
-
-
-
         )
-
         res.json(user.id)
     }
 }
@@ -67,7 +62,6 @@ const loginUser = async (req, res) => {
     } else {
       res.status(401).json({ message: "Wrong email or password" });
     }
-    // res.json({message: "user logged in" })
   };
   
 

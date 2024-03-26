@@ -6,22 +6,31 @@ function Register() {
   const [email, setEmail] = useState("");
   const [age, setAge] = useState("");
   const [phone, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState("male");
   const [password, setPassword] = useState("");
   const [confpassword, setconfPassword] = useState("");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const apiUrl = process.env.API_URL_USER;
 
     try {
-      const response = await fetch("http://localhost:3001/users", {
+      const response = await fetch(`${apiUrl}/users`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, firstName, lastName, age, phone, gender })
+        body: JSON.stringify({
+          email,
+          password,
+          firstName,
+          lastName,
+          age,
+          phone,
+          gender,
+        }),
       });
-  
+
       if (response.ok) {
         console.log("Registered successful");
         window.location.href = "/";
@@ -40,7 +49,7 @@ function Register() {
         lastName,
         age,
         phone,
-        gender
+        gender,
       };
       const dataString = JSON.stringify(data);
       window.location.href = "/login";
@@ -52,7 +61,10 @@ function Register() {
     <div className="bg-img">
       <div className="registerContent">
         <header>Register Form</header>
-        <form action="http://localhost:3001/users" method="post" onSubmit={handleSubmit}>
+        <form
+          method="post"
+          onSubmit={handleSubmit}
+        >
           <div className="row">
             <div className="col">
               <h6>First name</h6>
