@@ -3,7 +3,17 @@ import { Fragment, useEffect, useState } from "react";
 import "../Style/Cart.css";
 import NavBar from "../component/NavBar";
 function Cart() {
-  const [cartData, setCartData] = useState({ total: 0, Products: [] });
+const [cartData, setCartData] = useState<{
+  total: number;
+  products: {
+    _id: string;
+    name: string;
+    price: number;
+    description: string;
+    category: string;
+    image: string;
+  }[];
+}>({ total: 0, products: [] });
   const apiUrl = process.env.API_URL_CART;
 
   useEffect(() => {
@@ -28,7 +38,7 @@ function Cart() {
         if (response.ok) {
           console.log("Welcome to cart");
           const data = await response.json();
-          // console.log(data.Products);
+          console.log(data.Products);
           setCartData(data);
         } else {
           // Check if token is invalid (e.g., expired or unauthorized)
@@ -83,21 +93,28 @@ function Cart() {
                     </tr>
                   </thead>
                   <tbody>
-                    {cartData.Products.map((product: any) => (
-                      <tr className="cart-table-content" key={product._id}>
-                        <td className="cart-table-image-info">
-                          <img src={product.image} alt="Product Image" />
-                        </td>
-                        <td className="bold-text">{product.name}</td>
-                        <td>{product.category}</td>
-                        <td>${product.price}</td>
-                      </tr>
-                    ))}
+                    {cartData.products &&
+                      cartData.products.map((product) => (
+                        <tr key={product._id}>
+                          <td>
+                            <img
+                              style={{ marginTop: 10, marginRight: 22 }}
+                              src={product.image}
+                              width={200}
+                              height={400}
+                              alt={product.name}
+                              className="cart-product-image"
+                            />
+                          </td>
+                          <td style={{ marginLeft: 15 }}>{product.name}</td>
+                          <td>{product.category}</td>
+                          <td>${product.price}</td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
               <div className="cart-table-bill">
-                {/* <div className="bill-sub">Subtotal: $104.97</div> */}
                 <div className="bill-total bold-text">${cartData.total}</div>
               </div>
               <div className="cart-header-footer">
