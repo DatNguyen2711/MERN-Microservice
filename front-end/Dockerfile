@@ -12,7 +12,7 @@ FROM nginx:stable-alpine as production-stage
 RUN addgroup --system --gid 1001 fullstack
 RUN adduser --system --uid 1001 fullstack
 RUN mkdir /app
-COPY --from=build-stage /app/build /app
+COPY --from=build-stage /app/dist /app
 COPY --chown=fullstack:fullstack nginx.conf /etc/nginx/nginx.conf
 RUN chown -R fullstack:fullstack /app
 USER fullstack   
