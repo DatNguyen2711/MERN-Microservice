@@ -10,12 +10,12 @@ COPY . .
 
 # Giai đoạn 2: Tạo ảnh nhỏ hơn cho sản xuất
 FROM node:20-alpine
-RUN addgroup --system --gid 1001 fullstack
-RUN adduser --system --uid 1001 fullstack
+RUN addgroup --system --gid 1000 ubuntu
+RUN adduser --system --uid 1000 ubuntu
 WORKDIR /app
 COPY --from=builder /app .
 
-RUN chown -R fullstack:fullstack /app
+RUN chown -R ubuntu:ubuntu /app
 
-USER fullstack
+USER ubuntu
 CMD ["node", "server.js"]
