@@ -94,6 +94,7 @@ services:
     restart: unless-stopped
     networks:
       - db-network
+    user: "1001:1001"
 
 networks:
   db-network:

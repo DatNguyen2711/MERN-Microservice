@@ -64,9 +64,9 @@ for (let i = 0; i < 10; i++) {
     products.push(product);
 }
 
-Product.insertMany(products)
-    .then(() => {
-        console.log('Đã thêm các sản phẩm vào cơ sở dữ liệu.');
-    })
-    .catch(err => console.error('Lỗi khi thêm sản phẩm:', err));
+// Product.insertMany(products)
+//     .then(() => {
+//         console.log('Đã thêm các sản phẩm vào cơ sở dữ liệu.');
+//     })
+//     .catch(err => console.error('Lỗi khi thêm sản phẩm:', err));
 module.exports = mongoose;
